@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>quickstart-lit-library</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <script type="module" src="/src/WelcomeBanner.ts"></script>
+    <script type="module" src="/src/BizDataGrid.ts"></script>
+    <script type="module" src="/src/BizComboBox.ts"></script>
+    <script type="module" src="/src/BizDialog.ts"></script>
+    <script type="module" src="/src/BizTreeNode.ts"></script>
+    <script type="module" src="/src/BizDateRangePicker.ts"></script>
+    <script type="module" src="/src/BizBreadcrumb.ts"></script>
+    <script type="module" src="/src/BizToast.ts"></script>
+    <script type="module" src="/src/BizSearchPanel.ts"></script>
+    <script type="module" src="/src/BizTabNavigator.ts"></script>
+    <style>
+      body {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+        padding-bottom: 100px;
+      }
+      h2 {
+        margin-top: 40px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 10px;
+      }
+      .section {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+      button {
+        padding: 8px 16px;
+        cursor: pointer;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      button:hover {
+        background: #2980b9;
+      }
+    </style>
+  </head>
+  <body>
+    <biz-toast-manager id="toast-mgr"></biz-toast-manager>
+
+    <welcome-banner name="matthew ju" today="2025-08-09" status="Happy"></welcome-banner>
+    
+    <h2>Tab Navigator Example</h2>
+    <div class="section">
+      <biz-tab-navigator id="tab-nav"></biz-tab-navigator>
+      <div style="margin-top: 10px; display: flex; gap: 8px;">
+        <button id="add-tab-btn">새 탭 추가</button>
+      </div>
+    </div>
+
+    <h2>Breadcrumb Example</h2>
+    <div class="section">
+      <biz-breadcrumb id="sample-breadcrumb"></biz-breadcrumb>
+    </div>
+
+    <h2>Search Panel Example</h2>
+    <biz-search-panel id="search-panel">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="form-group">
+          <label>검색어</label>
+          <input type="text" placeholder="이름 또는 부서">
+        </div>
+        <div class="form-group">
+          <label>기간 선택</label>
+          <biz-date-range-picker id="search-date-range"></biz-date-range-picker>
+        </div>
+      </div>
+    </biz-search-panel>
+
+    <h2>Tree View Example</h2>
+    <div class="section">
+      <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px; background: white;">
+        <biz-tree-node id="root-tree"></biz-tree-node>
+      </div>
+      <div id="selected-info" style="margin-top: 10px;">선택된 노드 ID: </div>
+    </div>
+
+    <h2>Dialog Example</h2>
+    <div class="section">
+      <button id="open-dialog-btn">Open Modal Dialog</button>
+    </div>
+
+    <biz-dialog id="test-dialog">
+      <h3>상세 정보</h3>
+      <p>이것은 다이얼로그 내부의 콘텐츠입니다. Tab 키를 눌러 포커스 트랩 기능을 테스트해보세요.</p>
+      <div class="form-group">
+        <label>이름 입력</label>
+        <input type="text" placeholder="이름을 입력하세요">
+      </div>
+      <div class="dialog-footer">
+        <button id="close-dialog-btn" style="background: #95a5a6;">취소</button>
+        <button onclick="alert('저장되었습니다!')">저장</button>
+      </div>
+    </biz-dialog>
+
+    <h2>Combo Box Example</h2>
+    <div class="form-section">
+      <div class="form-group">
+        <label>Single Select (Searchable)</label>
+        <biz-combo-box id="single-combo" searchable placeholder="Select a person..."></biz-combo-box>
+      </div>
+
+      <div class="form-group">
+        <label>Multiple Select (Searchable)</label>
+        <biz-combo-box id="multi-combo" multiple searchable placeholder="Select departments..."></biz-combo-box>
+      </div>
+    </div>
+
+    <h2>Data Grid Example</h2>
+    <biz-data-grid id="sample-grid"></biz-data-grid>
+
+    <script type="module">
+      const toastMgr = document.getElementById('toast-mgr');
+
+      // Tab Navigator Initialization
+      const tabNav = document.getElementById('tab-nav');
+      const addTabBtn = document.getElementById('add-tab-btn');
+      let tabCounter = 1;
+      tabNav.tabs = [
+        { id: 'home', title: '홈', pinned: true },
+        { id: 'dashboard', title: '대시보드' }
+      ];
+      tabNav.activeTabId = 'home';
+      addTabBtn.addEventListener('click', () => {
+        const id = `tab-${tabCounter++}`;
+        tabNav.openTab({ id, title: `새 탭 ${id}` });
+      });
+      tabNav.addEventListener('tab-overflow', () => toastMgr.show('최대 탭 수에 도달했습니다!', 'warning'));
+
+      // Breadcrumb Initialization
+      const breadcrumb = document.getElementById('sample-breadcrumb');
+      breadcrumb.items = [
+        { label: '홈', href: '/' },
+        { label: '사용자 관리', href: '/users' },
+        { label: '상세 프로필' }
+      ];
+      breadcrumb.addEventListener('path-click', (e) => {
+        toastMgr.show(`경로 클릭: ${e.detail.label}`, 'info');
+      });
+
+      // Search Panel & Date Range Picker Initialization
+      const searchPanel = document.getElementById('search-panel');
+      const datePicker = document.getElementById('search-date-range');
+      searchPanel.addEventListener('search', () => {
+        toastMgr.show(`검색 실행! 기간: ${datePicker.startDate} ~ ${datePicker.endDate}`, 'success');
+      });
+      searchPanel.addEventListener('reset', () => {
+        toastMgr.show('필터가 초기화되었습니다.', 'info');
+      });
+
+      // Tree View Initialization
+      const tree = document.getElementById('root-tree');
+      const selectedInfo = document.getElementById('selected-info');
+      
+      let treeData = {
+        id: 'root',
+        label: '프로젝트 루트',
+        expanded: true,
+        children: [
+          {
+            id: 'src',
+            label: 'src',
+            expanded: true,
+            children: [
+              { id: 'components', label: 'components', children: [] },
+              { id: 'utils', label: 'utils', children: [] },
+              { id: 'index.ts', label: 'index.ts' }
+            ]
+          },
+          {
+            id: 'public',
+            label: 'public',
+            children: [
+              { id: 'favicon.ico', label: 'favicon.ico' },
+              { id: 'index.html', label: 'index.html' }
+            ]
+          },
+          { id: 'package.json', label: 'package.json' }
+        ]
+      };
+
+      tree.node = treeData;
+
+      // 트리의 상태를 업데이트하는 유틸리티 함수
+      const updateNodeStatus = (nodes, id, expanded) => {
+        if (nodes.id === id) {
+          nodes.expanded = expanded;
+          return true;
+        }
+        if (nodes.children) {
+          for (const child of nodes.children) {
+            if (updateNodeStatus(child, id, expanded)) return true;
+          }
+        }
+        return false;
+      };
+
+      tree.addEventListener('node-toggle', (e) => {
+        const { id, expanded } = e.detail;
+        updateNodeStatus(treeData, id, expanded);
+        tree.node = { ...treeData }; // 리렌더링 트리거
+      });
+
+      tree.addEventListener('node-select', (e) => {
+        selectedInfo.textContent = `선택된 노드 ID: ${e.detail.id}`;
+      });
+
+      // Dialog Initialization
+      const openDialogBtn = document.getElementById('open-dialog-btn');
+      const closeDialogBtn = document.getElementById('close-dialog-btn');
+      const dialog = document.getElementById('test-dialog');
+
+      openDialogBtn.addEventListener('click', () => {
+        dialog.open = true;
+      });
+
+      closeDialogBtn.addEventListener('click', () => {
+        dialog.open = false;
+      });
+
+      dialog.addEventListener('close', () => {
+        dialog.open = false;
+      });
+
+      // Combo Box Initialization
+      const singleCombo = document.getElementById('single-combo');
+      singleCombo.options = [
+        { label: '김철수', value: '101' },
+        { label: '이영희', value: '102' },
+        { label: '박지민', value: '103' },
+        { label: '최승우', value: '104' }
+      ];
+      singleCombo.addEventListener('change', (e) => console.log('Single Select Change:', e.detail));
+
+      const multiCombo = document.getElementById('multi-combo');
+      multiCombo.options = [
+        { label: '개발팀', value: 'dev' },
+        { label: '인사팀', value: 'hr' },
+        { label: '디자인팀', value: 'design' },
+        { label: '마케팅팀', value: 'marketing' },
+        { label: '영업팀', value: 'sales' }
+      ];
+      multiCombo.addEventListener('change', (e) => console.log('Multi Select Change:', e.detail));
+
+      // Data Grid Initialization
+      const grid = document.getElementById('sample-grid');
+      
+      // 컬럼 정의
+      grid.columns = [
+        { key: 'id', label: 'ID', sortable: true },
+        { key: 'name', label: '이름', sortable: true },
+        { key: 'dept', label: '부서', sortable: false },
+        { key: 'status', label: '상태' }
+      ];
+
+      // 데이터 설정
+      grid.data = [
+        { id: '101', name: '김철수', dept: '개발팀', status: '재직' },
+        { id: '102', name: '이영희', dept: '인사팀', status: '휴가' },
+        { id: '103', name: '박지민', dept: '디자인팀', status: '재직' },
+        { id: '104', name: '최승우', dept: '마케팅팀', status: '퇴사' }
+      ];
+
+      // 이벤트 리스너 등록
+      grid.addEventListener('row-click', (e) => {
+        alert(`클릭된 로우: ${JSON.stringify(e.detail)}`);
+      });
+
+      grid.addEventListener('sort-change', (e) => {
+        console.log('정렬 변경:', e.detail);
+        // 실제 운영 환경에서는 여기서 데이터를 서버에서 다시 불러오거나 정렬 로직을 수행합니다.
+      });
+    </script>
+  </body>
+</html>
