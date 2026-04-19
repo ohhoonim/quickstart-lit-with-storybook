@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html, type TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import './TreeNode.css';
 
@@ -16,7 +16,7 @@ export interface TreeNodeProps {
 }
 
 /** Recursive tree node component */
-export const TreeNode = ({ node, onToggle, onSelect }: TreeNodeProps) => {
+export const TreeNode = ({ node, onToggle, onSelect }: TreeNodeProps): TemplateResult => {
   if (!node) return html``;
 
   const hasChildren = node.children && node.children.length > 0;
