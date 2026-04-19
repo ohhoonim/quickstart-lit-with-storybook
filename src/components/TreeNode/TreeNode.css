@@ -1,0 +1,47 @@
+.biz-tree-wrapper {
+  display: block;
+  font-family: sans-serif;
+  user-select: none;
+}
+
+.biz-node-row {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.biz-node-row:hover {
+  background-color: #f0f0f0;
+}
+
+.biz-toggle-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 4px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.biz-toggle-icon--expanded {
+  transform: rotate(90deg);
+}
+
+.biz-node-label {
+  flex: 1;
+  font-size: 14px;
+}
+
+.biz-node-children {
+  margin-left: 20px;
+  border-left: 1px solid #e0e0e0;
+}
+
+.biz-empty-spacer {
+  width: 20px;
+}
